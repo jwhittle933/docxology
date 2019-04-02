@@ -10,8 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
-// Zip struct for handling extention methods on unziped files.
-type Zip struct {
+// UnZip struct for handling extention methods on unziped files.
+type UnZip struct {
 	Reader *zip.ReadCloser
 	Files  []*zip.File
 }
@@ -26,10 +26,11 @@ type Document struct {
 	Doc *zip.File
 }
 
-// DocxUnzip for reading Word .docx files.
-func DocxUnzip(pathToFile string) error {
+// DocxOnDiscUnzip for reading Word .docx files << Entry func
+// pathToFile param path to file stored on disc.
+func DocxOnDiscUnzip(pathToFile string) error {
 	saveLocation := fmt.Sprintf("./saves/dir-%d/unzip", uuid.New())
-	zip := ExtractFiles(pathToFile)
+	zip := ExtractLocalFiles(pathToFile)
 
 	if err := zip.MapFiles(saveLocation); err != nil {
 		return err
@@ -38,22 +39,28 @@ func DocxUnzip(pathToFile string) error {
 	return nil
 }
 
-// ExtractFiles returns []*zip.File.
-func ExtractFiles(pathToFile string) *Zip {
+// ExtractLocalFiles returns *Zip
+// pathToFile param path to file stored on disc.
+func ExtractLocalFiles(pathToFile string) *UnZip {
 	reader, err := zip.OpenReader(pathToFile)
 	if err != nil {
 		panic(err)
 	}
 	// defer reader.Close()
-	return &Zip{
+	return &UnZip{
 		Reader: reader,
 		Files:  reader.File,
 	}
 }
 
+// ExtractFileInMemory return *Zip
+func ExtractFileInMemory() *UnZip {
+	//
+}
+
 // MapFiles for iterating through zip.File slice
 // and performing an operation on it.
-func (f *Zip) MapFiles(saveLocation string) error {
+func (f *UnZip) MapFiles(saveLocation string) error {
 	if err := os.MkdirAll(saveLocation, 0755); err != nil {
 		return err
 	}
@@ -104,7 +111,7 @@ func CopyToOS(file *zip.File, filePath string) error {
 }
 
 //FindDoc locates file named word/document.xml
-func (f *Zip) FindDoc() (file *Document) {
+func (f *UnZip) FindDoc() (file *Document) {
 	for _, fi := range f.Files {
 		if fi.Name == "word/document.xml" {
 			file = &Document{
