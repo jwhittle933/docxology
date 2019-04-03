@@ -33,7 +33,7 @@ type Document struct {
 // pathToFile param path to file stored on disc.
 func DocxOnDiscUnzip(pathToFile string) error {
 	saveLocation := fmt.Sprintf("./saves/dir-%d/unzip", uuid.New())
-	zip := ExtractLocalFiles(pathToFile)
+	zip := ExtractLocalFile(pathToFile)
 
 	if err := zip.MapFiles(saveLocation); err != nil {
 		return err
@@ -42,9 +42,9 @@ func DocxOnDiscUnzip(pathToFile string) error {
 	return nil
 }
 
-// ExtractLocalFiles returns *UnZip
+// ExtractLocalFile returns *UnZip
 // pathToFile param path to file stored on disc.
-func ExtractLocalFiles(pathToFile string) *UnZip {
+func ExtractLocalFile(pathToFile string) *UnZip {
 	file, err := os.Open(pathToFile)
 	if err != nil {
 		panic(err)
