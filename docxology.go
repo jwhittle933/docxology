@@ -15,7 +15,7 @@ import (
 
 // UnZip struct for handling extention methods on unziped files.
 type UnZip struct {
-	Reader *zip.ReadCloser
+	Reader *zip.Reader
 	Files  []*zip.File
 }
 
@@ -45,14 +45,22 @@ func DocxOnDiscUnzip(pathToFile string) error {
 // ExtractLocalFiles returns *UnZip
 // pathToFile param path to file stored on disc.
 func ExtractLocalFiles(pathToFile string) *UnZip {
-	reader, err := zip.OpenReader(pathToFile)
+	file, err := os.Open(pathToFile)
 	if err != nil {
 		panic(err)
 	}
-	// defer reader.Close()
+	defer file.Close()
+
+	src, err := ioutil.ReadAll(file)
+	if err != nil {
+		panic(err)
+	}
+
+	zipReader, err := zip.NewReader(bytes.NewReader(src), int64(len(src)))
+
 	return &UnZip{
-		Reader: reader,
-		Files:  reader.File,
+		Reader: zipReader,
+		Files:  zipReader.File,
 	}
 }
 
@@ -72,7 +80,8 @@ func ExtractFileHTTP(fi *multipart.FileHeader) *UnZip {
 	zipReader, err := zip.NewReader(bytes.NewReader(src), fi.Size)
 
 	return &UnZip{
-		Files: zipReader.File,
+		Reader: zipReader,
+		Files:  zipReader.File,
 	}
 }
 
