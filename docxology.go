@@ -2,6 +2,7 @@ package docxology
 
 import (
 	"archive/zip"
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -63,17 +64,16 @@ func ExtractFileHTTP(fi *multipart.FileHeader) *UnZip {
 	}
 	defer file.Close()
 
-	buffer := make([]byte, fi.Size)
-	if _, err := file.Read(buffer); err != nil {
+	src, err := ioutil.ReadAll(file)
+	if err != nil {
 		panic(err)
 	}
 
-	// TODO: implement zip -> func (f *File) Open() (io.ReadCloser, error)
-	src, err := ioutil.ReadAll(file)
+	zipReader, err := zip.NewReader(bytes.NewReader(src), fi.Size)
 
-	// TODO
-	var uz = &UnZip{}
-	return uz
+	return &UnZip{
+		Files: zipReader.File,
+	}
 }
 
 // MapFiles for iterating through zip.File slice
