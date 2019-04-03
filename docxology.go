@@ -7,6 +7,7 @@ package docxology
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -31,8 +32,11 @@ type UnZipedFile struct {
 }
 
 // XMLData struct for Unmarshalling xml.
+// TODO: Determine necessary fields
 type XMLData struct {
-	Text string `xml:"w:t"`
+	Text    string   `xml:"w:t"`
+	Name    string   `xml:"FullName"`
+	XMLName xml.Name `xml:"Person"`
 }
 
 // Document type for storing word/document.xml extracted from docx zip.
@@ -163,6 +167,14 @@ func (d *Document) XMLExtractText() {
 		panic(err)
 	}
 	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		panic(err)
+	}
+
+	s := XMLData{}
+	if err := xml.Unmarshal(data, &s); err != nil {
+		panic(err)
+	}
 
 	return
 }
