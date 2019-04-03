@@ -42,7 +42,7 @@ func DocxOnDiscUnzip(pathToFile string) error {
 	return nil
 }
 
-// ExtractLocalFiles returns *Zip
+// ExtractLocalFiles returns *UnZip
 // pathToFile param path to file stored on disc.
 func ExtractLocalFiles(pathToFile string) *UnZip {
 	reader, err := zip.OpenReader(pathToFile)
@@ -56,7 +56,7 @@ func ExtractLocalFiles(pathToFile string) *UnZip {
 	}
 }
 
-// ExtractFileHTTP return *Zip
+// ExtractFileHTTP return *UnZip
 func ExtractFileHTTP(fi *multipart.FileHeader) *UnZip {
 	file, err := fi.Open()
 	if err != nil {
