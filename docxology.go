@@ -23,6 +23,11 @@ type UnZip struct {
 	Files  []*zip.File
 }
 
+// UnZipedFile struct for extending *zip.File
+type UnZipedFile struct {
+	File *zip.File
+}
+
 // XMLData struct for Unmarshalling xml.
 type XMLData struct {
 	Text string `xml:"w:t"`
@@ -96,6 +101,7 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 		return err
 	}
 	for _, file := range f.Files {
+		fi := UnZipedFile{file}
 		path := filepath.Join(saveLocation, file.Name)
 		dirPath := filepath.Dir(path)
 		os.MkdirAll(dirPath, 0777)
@@ -104,7 +110,7 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 			return err
 		}
 
-		if err := CopyToOS(file, path); err != nil {
+		if err := fi.CopyToOS(path); err != nil {
 			return err
 		}
 	}
@@ -112,14 +118,14 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 }
 
 // CopyToOS for mapping over files.
-func CopyToOS(file *zip.File, filePath string) error {
-	fileReader, err := file.Open()
+func (f *UnZipedFile) CopyToOS(filePath string) error {
+	fileReader, err := f.File.Open()
 	if err != nil {
 		return err
 	}
 	defer fileReader.Close()
 
-	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, file.Mode())
+	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, f.File.Mode())
 	if err != nil {
 		return err
 	}
