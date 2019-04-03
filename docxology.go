@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 
@@ -53,9 +54,11 @@ func ExtractLocalFiles(pathToFile string) *UnZip {
 	}
 }
 
-// ExtractFileInMemory return *Zip
-func ExtractFileInMemory() *UnZip {
-	//
+// ExtractFileHTTP return *Zip
+func ExtractFileHTTP(fi *multipart.File) *UnZip {
+	// TODO
+	var uz = &UnZip{}
+	return uz
 }
 
 // MapFiles for iterating through zip.File slice
