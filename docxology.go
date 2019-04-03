@@ -17,6 +17,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const defaultSaveLocation = "~/"
+
 // UnZip struct for handling extention methods on unziped files.
 type UnZip struct {
 	Reader *zip.Reader
@@ -37,6 +39,9 @@ type XMLData struct {
 type Document struct {
 	Doc *zip.File
 }
+
+// Callback func type
+type Callback func(string) error
 
 // DocxOnDiscUnzip for reading Word .docx files << Entry func
 // pathToFile param path to file stored on disc.
@@ -117,15 +122,15 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 	return nil
 }
 
-// CopyToOS for mapping over files.
-func (f *Document) CopyToOS(filePath string) error {
-	fileReader, err := f.Doc.Open()
+// CopyToOS for writing contents of d *Document to disc.
+func (d *Document) CopyToOS(filePath string) error {
+	fileReader, err := d.Doc.Open()
 	if err != nil {
 		return err
 	}
 	defer fileReader.Close()
 
-	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, f.Doc.Mode())
+	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, d.Doc.Mode())
 	if err != nil {
 		return err
 	}
@@ -139,11 +144,11 @@ func (f *Document) CopyToOS(filePath string) error {
 	return nil
 }
 
-//FindDoc locates file named word/document.xml
-func (f *UnZip) FindDoc() (file *Document) {
+//FindDoc locates file by filename and returns Document
+func (f *UnZip) FindDoc(searchDoc string) (file Document) {
 	for _, fi := range f.Files {
-		if fi.Name == "word/document.xml" {
-			file = &Document{
+		if fi.Name == searchDoc {
+			file = Document{
 				Doc: fi,
 			}
 		}
@@ -152,6 +157,12 @@ func (f *UnZip) FindDoc() (file *Document) {
 }
 
 // XMLExtractText for manipulating xml
-func XMLExtractText() {
+func (d *Document) XMLExtractText() {
+	file, err := d.Doc.Open()
+	if err != nil {
+		panic(err)
+	}
+	data, err := ioutil.ReadAll(file)
+
 	return
 }
