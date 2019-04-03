@@ -101,7 +101,7 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 		return err
 	}
 	for _, file := range f.Files {
-		fi := UnZipedFile{file}
+		fi := Document{file}
 		path := filepath.Join(saveLocation, file.Name)
 		dirPath := filepath.Dir(path)
 		os.MkdirAll(dirPath, 0777)
@@ -118,14 +118,14 @@ func (f *UnZip) MapFiles(saveLocation string) error {
 }
 
 // CopyToOS for mapping over files.
-func (f *UnZipedFile) CopyToOS(filePath string) error {
-	fileReader, err := f.File.Open()
+func (f *Document) CopyToOS(filePath string) error {
+	fileReader, err := f.Doc.Open()
 	if err != nil {
 		return err
 	}
 	defer fileReader.Close()
 
-	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, f.File.Mode())
+	targetFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, f.Doc.Mode())
 	if err != nil {
 		return err
 	}
