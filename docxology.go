@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -55,7 +56,21 @@ func ExtractLocalFiles(pathToFile string) *UnZip {
 }
 
 // ExtractFileHTTP return *Zip
-func ExtractFileHTTP(fi *multipart.File) *UnZip {
+func ExtractFileHTTP(fi *multipart.FileHeader) *UnZip {
+	file, err := fi.Open()
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	buffer := make([]byte, fi.Size)
+	if _, err := file.Read(buffer); err != nil {
+		panic(err)
+	}
+
+	// TODO: implement zip -> func (f *File) Open() (io.ReadCloser, error)
+	src, err := ioutil.ReadAll(file)
+
 	// TODO
 	var uz = &UnZip{}
 	return uz
