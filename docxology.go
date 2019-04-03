@@ -1,3 +1,7 @@
+/*
+ * Package for unzipping, reading, manipulating, and storing docx files in their expanded, xml format.
+ */
+
 package docxology
 
 import (
@@ -125,14 +129,6 @@ func CopyToOS(file *zip.File, filePath string) error {
 	if _, err := io.Copy(targetFile, fileReader); err != nil {
 		return err
 	}
-
-	// t := XMLData{}
-	// data, err := ioutil.ReadAll(targetFile)
-	// if err != nil {
-	// 	return err
-	// }
-	// xml.Unmarshal([]byte(data), &t)
-	// fmt.Println("Reading XML", t.Text)
 
 	return nil
 }
