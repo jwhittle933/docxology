@@ -31,17 +31,35 @@ type UnZipedFile struct {
 	File *zip.File
 }
 
-// XMLData struct for Unmarshalling xml.
-// TODO: Determine necessary fields
-type XMLData struct {
-	Text    string   `xml:"w:t"`
-	Name    string   `xml:"FullName"`
-	XMLName xml.Name `xml:"Person"`
-}
-
 // Document type for storing word/document.xml extracted from docx zip.
 type Document struct {
 	Doc *zip.File
+}
+
+// XMLData struct for Unmarshalling xml.
+/*
+!! https://www.loc.gov/preservation/digital/formats/fdd/fdd000397.shtml
+!! http://officeopenxml.com/anatomyofOOXML.php
+!! https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-wordprocessingml-document
+*
+* Notes from Microsoft:
+* A WordprocessingML document is organized around the concept of stories.
+* A story is a region of content in a WordprocessingML document.
+*
+* The main document story of the simplest WordprocessingML document consists of the following XML elements:
+* document – The root element
+* body – The container for the collection of block-level structures
+* p – A paragraph
+* r – A run
+* t – A range of text
+*/
+type XMLData struct {
+	Document string   `xml:"w:document"`
+	Body     string   `xml:"w:body"`
+	Paragaph string   `xml:"w:p"`
+	Text     string   `xml:"w:t"`
+	Name     string   `xml:"FullName"`
+	XMLName  xml.Name `xml:"Person"`
 }
 
 // Callback func type
@@ -166,6 +184,8 @@ func (d *Document) XMLExtractText() {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
+
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		panic(err)
