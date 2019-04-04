@@ -4,6 +4,8 @@ Golang Word Doc (.docx) file extractor and manipulator.
 
 _In progress_ and open to contributions, suggestions, etc.
 
+[![Build Status](https://travis-ci.com/jwhittle933/docxology.svg?branch=master)](https://travis-ci.com/jwhittle933/docxology)
+
 ## How To
 
 ### Info
