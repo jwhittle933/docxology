@@ -36,7 +36,7 @@ type Document struct {
 	Doc *zip.File
 }
 
-// XMLData struct for Unmarshalling xml.
+// XMLDocMacroData struct for Unmarshalling xml.
 /*
 !! https://www.loc.gov/preservation/digital/formats/fdd/fdd000397.shtml
 !! http://officeopenxml.com/anatomyofOOXML.php
@@ -53,13 +53,11 @@ type Document struct {
 * r – A run
 * t – A range of text
 */
-type XMLData struct {
-	Document string   `xml:"w:document"`
-	Body     string   `xml:"w:body"`
-	Paragaph string   `xml:"w:p"`
-	Text     string   `xml:"w:t"`
-	Name     string   `xml:"FullName"`
-	XMLName  xml.Name `xml:"Person"`
+type XMLDocMacroData struct {
+	Document string `xml:"w:document"`
+	Body     string `xml:"w:body"`
+	Paragaph string `xml:"w:p"`
+	Text     string `xml:"w:t"`
 }
 
 // Callback func type
@@ -180,6 +178,7 @@ func (f *UnZip) FindDoc(searchDoc string) (file Document) {
 
 // XMLExtractText for manipulating xml
 func (d *Document) XMLExtractText() {
+	var doc XMLDocMacroData
 	file, err := d.Doc.Open()
 	if err != nil {
 		panic(err)
@@ -191,8 +190,7 @@ func (d *Document) XMLExtractText() {
 		panic(err)
 	}
 
-	s := XMLData{}
-	if err := xml.Unmarshal(data, &s); err != nil {
+	if err := xml.Unmarshal(data, &doc); err != nil {
 		panic(err)
 	}
 
