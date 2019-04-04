@@ -58,8 +58,11 @@ type XMLDocMacroData struct {
 	Text         string   `xml:"body>p>r>t"`
 }
 
-// Callback func type
-type Callback func(string) error
+// LambdaNoReturn func type
+type LambdaNoReturn func(string) error
+
+// LambdaReturn func type
+type LambdaReturn func(string) (string error)
 
 // DocxOnDiscUnzip for reading Word .docx files << Entry func
 // pathToFile param path to file stored on disc.
