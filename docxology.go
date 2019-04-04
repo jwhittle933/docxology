@@ -54,10 +54,10 @@ type Document struct {
 * t – A range of text
 */
 type XMLDocMacroData struct {
-	Document string `xml:"w:document"`
-	Body     string `xml:"w:body"`
-	Paragaph string `xml:"w:p"`
-	Text     string `xml:"w:t"`
+	Document string `xml:"document"`
+	Body     string `xml:"document>body"`
+	Paragaph string `xml:"document>body>p"`
+	Text     string `xml:"document>body>p>r>t"`
 }
 
 // Callback func type
@@ -165,10 +165,11 @@ func (d *Document) CopyToOS(filePath string) error {
 }
 
 //FindDoc locates file by filename and returns Document
-func (f *UnZip) FindDoc(searchDoc string) (file Document) {
+// This method must include dirs, i.e., word/document/xml, word/theme/theme1.xml
+func (f *UnZip) FindDoc(searchDoc string) (file *Document) {
 	for _, fi := range f.Files {
 		if fi.Name == searchDoc {
-			file = Document{
+			file = &Document{
 				Doc: fi,
 			}
 		}
