@@ -54,10 +54,8 @@ type Document struct {
 * t – A range of text
 */
 type XMLDocMacroData struct {
-	Document string `xml:"document"`
-	Body     string `xml:"document>body"`
-	Paragaph string `xml:"document>body>p"`
-	Text     string `xml:"document>body>p>r>t"`
+	DocumentMeta xml.Name `xml:"document"`
+	Text         string   `xml:"body>p>r>t"`
 }
 
 // Callback func type
