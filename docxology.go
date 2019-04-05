@@ -68,7 +68,10 @@ type LambdaReturn func(string) (string error)
 // pathToFile param path to file stored on disc.
 func DocxOnDiscUnzip(pathToFile string) error {
 	saveLocation := fmt.Sprintf("./saves/dir-%d/unzip", uuid.New())
-	zip := ExtractLocalFile(pathToFile)
+	zip, err := ExtractLocalDocx(pathToFile)
+	if err != nil {
+		panic(err)
+	}
 
 	if err := zip.MapFiles(saveLocation); err != nil {
 		return err
@@ -77,18 +80,18 @@ func DocxOnDiscUnzip(pathToFile string) error {
 	return nil
 }
 
-// ExtractLocalFile returns *UnZip
+// ExtractLocalDocx returns *UnZip
 // pathToFile param path to file stored on disc.
-func ExtractLocalFile(pathToFile string) *UnZip {
+func ExtractLocalDocx(pathToFile string) (*UnZip, error) {
 	file, err := os.Open(pathToFile)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
 	src, err := ioutil.ReadAll(file)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	zipReader, err := zip.NewReader(bytes.NewReader(src), int64(len(src)))
@@ -96,7 +99,7 @@ func ExtractLocalFile(pathToFile string) *UnZip {
 	return &UnZip{
 		Reader: zipReader,
 		Files:  zipReader.File,
-	}
+	}, nil
 }
 
 // ExtractFileHTTP return *UnZip
