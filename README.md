@@ -18,7 +18,3 @@ _In progress_ and open to contributions, suggestions, etc.
 ```bash
 go get github.com/jwhittle933/docxology
 ```
-
-### GoDoc
-
-[https://godoc.org/github.com/jwhittle933/docxology](https://godoc.org/github.com/jwhittle933/docxology)
