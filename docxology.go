@@ -36,6 +36,9 @@ type Document struct {
 	Doc *zip.File
 }
 
+// Mapfunc type for Lambda to MapFiles
+type Mapfunc func(string) error
+
 // XMLDocMacroData struct for Unmarshalling xml.
 /*
 !! https://www.loc.gov/preservation/digital/formats/fdd/fdd000397.shtml
@@ -125,6 +128,7 @@ func ExtractFileHTTP(fi *multipart.FileHeader) *UnZip {
 
 // MapFiles for iterating through zip.File slice
 // and performing an operation on it.
+// TODO: Pass in Lambda to map over files
 func (f *UnZip) MapFiles(saveLocation string) error {
 	if err := os.MkdirAll(saveLocation, 0755); err != nil {
 		return err
