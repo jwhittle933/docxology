@@ -186,7 +186,7 @@ func (f *UnZip) FindDoc(searchDoc string) (file *Document) {
 }
 
 // XMLExtractText for manipulating xml
-func (d *Document) XMLExtractText() {
+func (d *Document) XMLExtractText() XMLDocMacroData {
 	var doc XMLDocMacroData
 	file, err := d.Doc.Open()
 	if err != nil {
@@ -203,5 +203,5 @@ func (d *Document) XMLExtractText() {
 		panic(err)
 	}
 
-	return
+	return doc
 }
